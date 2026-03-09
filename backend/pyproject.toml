@@ -1,0 +1,86 @@
+[project]
+name = "to-do-list-backend"
+version = "0.1.0"
+description = "To do list backend built with Django and Django REST Framework"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "django>=6.0.3",
+    "django-environ>=0.13.0",
+    "djangorestframework>=3.16.1",
+]
+
+[tool.mypy]
+python_version = "3.12"
+files = ["app"]
+strict = true
+show_error_codes = true
+pretty = true
+cache_dir = ".mypy_cache"
+
+[tool.ruff]
+target-version = "py312"
+src = ["app"]
+fix = true
+exclude = [
+    ".bzr",
+    ".direnv",
+    ".eggs",
+    ".git",
+    ".git-rewrite",
+    ".hg",
+    ".ipynb_checkpoints",
+    ".mypy_cache",
+    ".nox",
+    ".pants.d",
+    ".pyenv",
+    ".pytest_cache",
+    ".pytype",
+    ".ruff_cache",
+    ".svn",
+    ".tox",
+    ".venv",
+    ".vscode",
+    "__pypackages__",
+    "_build",
+    "buck-out",
+    "build",
+    "dist",
+    "node_modules",
+    "site-packages",
+    "venv",
+]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP", "C4", "SIM"]
+ignore = ["E501"]
+fixable = ["ALL"]
+dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
+
+[tool.ruff.lint.isort]
+known-first-party = ["app"]
+
+[tool.pytest.ini_options]
+minversion = "7.0"
+pythonpath = ["."]
+testpaths = ["./tests"]
+python_files = ["test_*.py", "*_test.py"]
+log_cli = true
+log_level = "INFO"
+addopts = [
+    "-ra",
+    "-v",
+    "--tb=auto",
+    "--color=auto",
+    "--exitfirst",
+    "--cov=app",
+    "--cov-report=term-missing",
+]
+markers = [
+    "unit: fast isolated tests",
+    "integration: tests with external systems",
+    "api: http contract tests",
+]
+
+[dependency-groups]
+dev = ["mypy>=1.19.1", "pytest>=9.0.2", "pytest-cov>=7.0.0", "ruff>=0.15.5"]
