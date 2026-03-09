@@ -16,10 +16,17 @@ dependencies = [
 [tool.mypy]
 python_version = "3.12"
 files = ["app"]
-strict = true
+strict_optional = true
+warn_return_any = true
+warn_unused_configs = true
+warn_unused_ignores = true
 show_error_codes = true
 pretty = true
 cache_dir = ".mypy_cache"
+plugins = ["mypy_django_plugin.main", "mypy_drf_plugin.main"]
+
+[tool.django-stubs]
+django_settings_module = "config.settings"
 
 [tool.ruff]
 target-version = "py312"
@@ -86,4 +93,11 @@ markers = [
 ]
 
 [dependency-groups]
-dev = ["mypy>=1.19.1", "pytest>=9.0.2", "pytest-cov>=7.0.0", "ruff>=0.15.5"]
+dev = [
+    "django-stubs>=5.2.9",
+    "djangorestframework-stubs>=3.16.8",
+    "mypy>=1.19.1",
+    "pytest>=9.0.2",
+    "pytest-cov>=7.0.0",
+    "ruff>=0.15.5",
+]

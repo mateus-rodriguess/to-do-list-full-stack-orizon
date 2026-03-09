@@ -10,9 +10,10 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
+import os
 from pathlib import Path
 
-import environ
+import environ  # type: ignore
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -42,6 +43,7 @@ INSTALLED_APPS = [
 ]
 
 REST_FRAMEWORK = {
+    "EXCEPTION_HANDLER": "core.exceptions.handler.custom_exception_handler",
     "DEFAULT_AUTHENTICATION_CLASSES": (
         "rest_framework.authentication.TokenAuthentication",
     ),
@@ -56,6 +58,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "core.middleware.request_logging.RequestLoggingMiddleware",
 ]
 
 ROOT_URLCONF = "config.urls"
@@ -139,4 +142,60 @@ SPECTACULAR_SETTINGS = {
     "TITLE": "To-do list API - Orizon",
     "DESCRIPTION": "API Testing for Orizons To-do list project",
     "VERSION": "1.0.0",
+}
+
+
+LOG_DIR = BASE_DIR / "logs"
+os.makedirs(LOG_DIR, exist_ok=True)
+
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "formatters": {
+        "detailed": {
+            "format": (
+                "%(levelname)s | %(asctime)s | %(name)s | "
+                "%(module)s:%(lineno)d | %(message)s"
+            ),
+            "datefmt": "%Y-%m-%d %H:%M:%S",
+        },
+        "request": {"format": ("%(levelname)s | %(asctime)s | %(message)s")},
+    },
+    "handlers": {
+        "console": {
+            "class": "logging.StreamHandler",
+            "formatter": "detailed",
+        },
+        "file": {
+            "class": "logging.handlers.RotatingFileHandler",
+            "filename": LOG_DIR / "api.log",
+            "maxBytes": 1024 * 1024 * 10,
+            "backupCount": 5,
+            "formatter": "detailed",
+        },
+        "request_file": {
+            "class": "logging.handlers.RotatingFileHandler",
+            "filename": LOG_DIR / "requests.log",
+            "maxBytes": 1024 * 1024 * 10,
+            "backupCount": 5,
+            "formatter": "request",
+        },
+    },
+    "loggers": {
+        "django": {
+            "handlers": ["console", "file"],
+            "level": "INFO",
+            "propagate": True,
+        },
+        "django.request": {
+            "handlers": ["console", "file"],
+            "level": "ERROR",
+            "propagate": False,
+        },
+        "api.request": {
+            "handlers": ["request_file", "console"],
+            "level": "INFO",
+            "propagate": False,
+        },
+    },
 }
