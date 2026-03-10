@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     "django_filters",
     "drf_spectacular",
     "apps.users.apps.UsersConfig",
+    "apps.tasks.apps.TasksConfig",
 ]
 
 REST_FRAMEWORK = {
@@ -49,6 +50,9 @@ REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
         "rest_framework.authentication.TokenAuthentication",
     ),
+    "DEFAULT_PERMISSION_CLASSES": [
+        "rest_framework.permissions.IsAuthenticated",
+    ],
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
     "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
     "PAGE_SIZE": 50,
@@ -149,6 +153,14 @@ SPECTACULAR_SETTINGS = {
     "TITLE": "To-do list API - Orizon",
     "DESCRIPTION": "API Testing for Orizons To-do list project",
     "VERSION": "1.0.0",
+    "COMPONENT_SPLIT_REQUEST": True,
+    "SECURITY_SCHEMES": {
+        "TokenAuth": {
+            "type": "apiKey",
+            "in": "header",
+            "name": "Authorization",
+        }
+    },
 }
 
 

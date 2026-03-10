@@ -31,4 +31,5 @@ urlpatterns = [
         name="swagger-ui",
     ),
     path("", include("apps.users.urls")),
+    path("", include("apps.tasks.urls")),
 ]
