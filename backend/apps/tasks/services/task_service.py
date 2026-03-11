@@ -13,7 +13,6 @@ class TaskService:
         validate_task_title(data["title"])
 
         collaborators = data.pop("collaborators", [])
-        print("collaborators", data["owner"])
         task = self.repository.create(data)
 
         if collaborators:

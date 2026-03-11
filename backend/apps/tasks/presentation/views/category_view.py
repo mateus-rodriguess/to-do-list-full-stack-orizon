@@ -25,8 +25,7 @@ class CategoryViewSet(ModelViewSet):
     ordering = ["id"]
 
     def create(self, request: Request, *args, **kwargs):
-        request.data["user"] = request.user.id
-        serializer = self.get_serializer(data=request.data)
+        serializer = self.get_serializer(data={**request.data, "user": request.user.id})
         serializer.is_valid(raise_exception=True)
 
         user = CategoryService().create(serializer.validated_data)

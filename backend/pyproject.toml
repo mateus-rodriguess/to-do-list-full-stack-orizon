@@ -6,6 +6,7 @@ readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
     "django>=6.0.3",
+    "django-cors-headers>=4.9.0",
     "django-environ>=0.13.0",
     "django-filter>=25.2",
     "djangorestframework>=3.16.1",
@@ -72,18 +73,18 @@ known-first-party = ["app"]
 
 [tool.pytest.ini_options]
 minversion = "7.0"
+testpaths = ["apps", "tests"]
 pythonpath = ["."]
-testpaths = ["./tests"]
-python_files = ["test_*.py", "*_test.py"]
 log_cli = true
 log_level = "INFO"
+DJANGO_SETTINGS_MODULE = "config.settings"
 addopts = [
     "-ra",
     "-v",
     "--tb=auto",
     "--color=auto",
     "--exitfirst",
-    "--cov=app",
+    "--cov=./",
     "--cov-report=term-missing",
 ]
 markers = [
@@ -92,13 +93,31 @@ markers = [
     "api: http contract tests",
 ]
 
+[tool.coverage.run]
+source = ["."]
+omit = [
+    "*migrations*",
+    "*tests*",
+    "manage.py",
+    ".venv/*",
+    "*wsgi.py",
+    "*asgi.py",
+    "*settings.py",
+]
+
+[tool.coverage.report]
+show_missing = true
+skip_covered = true
+
 [dependency-groups]
 dev = [
     "django-stubs>=5.2.9",
     "djangorestframework-stubs>=3.16.8",
+    "faker>=40.8.0",
     "mypy>=1.19.1",
     "pytest>=9.0.2",
     "pytest-cov>=7.0.0",
+    "pytest-django>=4.12.0",
     "ruff>=0.15.5",
     "types-django-filter>=25.2.0.20260213",
 ]

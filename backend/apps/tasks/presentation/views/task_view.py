@@ -24,6 +24,9 @@ class TaskViewSet(ModelViewSet):
     ordering = ["id"]
 
     def get_queryset(self):
+        if getattr(self, "swagger_fake_view", False):
+            return Task.objects.none()
+
         user = self.request.user
         return (
             Task.objects.filter(Q(owner=user) | Q(collaborators=user))
