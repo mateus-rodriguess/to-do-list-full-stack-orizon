@@ -56,9 +56,10 @@ export default function Tasks() {
           const priority = priorityConfig[task.priority];
 
           return (
-            <div
+            <Link
               key={task.id}
-              className="bg-white rounded-lg shadow p-5 border hover:shadow-md transition"
+              to={`/tasks/${task.id}`}
+              className="block bg-white rounded-lg shadow p-5 border hover:shadow-md transition"
             >
               <div className="flex justify-between items-start">
                 <div>
@@ -84,7 +85,7 @@ export default function Tasks() {
                   Prioridade: {priority.label}
                 </span>
               </div>
-            </div>
+            </Link>
           );
         })}
       </div>
