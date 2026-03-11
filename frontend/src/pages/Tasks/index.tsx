@@ -1,7 +1,11 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { getTasks } from "../../services/taskService";
 import type { Task, TaskResponse } from "../../types/task";
 import { Link } from "react-router-dom";
+import {
+  getAllCategories,
+  type Category,
+} from "../../services/categoryService";
 
 const priorityConfig = {
   LOW: {
@@ -21,10 +25,33 @@ const priorityConfig = {
 export default function Tasks() {
   const [data, setData] = useState<TaskResponse | null>(null);
   const [page, setPage] = useState(1);
+  const [search, setSearch] = useState("");
+  const [category, setCategory] = useState<number | "">("");
+  const [isCompleted, setIsCompleted] = useState<string | "">("");
+  const [categories, setCategories] = useState<Category[]>([]);
+
+  const fetchTasks = useCallback(async () => {
+    const params: Record<string, unknown> = { page };
+    if (search) params.search = search;
+    if (category) params.category = category;
+    if (isCompleted) params.is_completed = isCompleted;
+
+    const data = await getTasks(params);
+    setData(data);
+  }, [page, search, category, isCompleted]);
 
   useEffect(() => {
-    getTasks(page).then(setData);
-  }, [page]);
+    (async () => {
+      await fetchTasks();
+    })();
+  }, [fetchTasks]);
+
+  useEffect(() => {
+    (async () => {
+      const cats = await getAllCategories();
+      setCategories(cats);
+    })();
+  }, []);
 
   if (!data) {
     return <div className="p-10 text-center text-gray-500">Carregando...</div>;
@@ -51,10 +78,44 @@ export default function Tasks() {
           </Link>
         </div>
       </div>
+      <div className="flex gap-2 mb-4">
+        <input
+          type="text"
+          placeholder="Buscar..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          className="border p-2 rounded flex-1"
+        />
+
+        <select
+          value={category}
+          onChange={(e) =>
+            setCategory(e.target.value ? Number(e.target.value) : "")
+          }
+          className="border p-2 rounded"
+        >
+          <option value="">Todas as categorias</option>
+          {categories.map((cat) => (
+            <option key={cat.id} value={cat.id}>
+              {cat.name}
+            </option>
+          ))}
+        </select>
+
+        <select
+          value={isCompleted}
+          onChange={(e) => setIsCompleted(e.target.value)}
+          className="border p-2 rounded"
+        >
+          <option value="">Todos</option>
+          <option value="true">Concluídas</option>
+          <option value="false">Pendentes</option>
+        </select>
+      </div>
+
       <div className="grid gap-4">
         {data.result.map((task: Task) => {
           const priority = priorityConfig[task.priority];
-
           return (
             <Link
               key={task.id}
