@@ -1,8 +1,10 @@
+from apps.tasks.model.task_model import Task
 from apps.tasks.presentation.serializers.task_serializer import (
     TaskFilter,
     TaskSerializer,
 )
 from apps.tasks.services.task_service import TaskService
+from django.db.models import Q
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import status
 from rest_framework.filters import OrderingFilter, SearchFilter
@@ -22,7 +24,13 @@ class TaskViewSet(ModelViewSet):
     ordering = ["id"]
 
     def get_queryset(self):
-        return TaskService().list()
+        user = self.request.user
+        return (
+            Task.objects.filter(Q(owner=user) | Q(collaborators=user))
+            .select_related("owner")
+            .prefetch_related("collaborators")
+            .distinct()
+        )
 
     def create(self, request, *args, **kwargs):
         validated_data = request.data.copy()

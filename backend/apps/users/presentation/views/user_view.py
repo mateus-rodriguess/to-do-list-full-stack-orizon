@@ -6,6 +6,7 @@ from django.contrib.auth import get_user_model
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import viewsets
 from rest_framework.filters import OrderingFilter, SearchFilter
+from rest_framework.permissions import AllowAny, IsAuthenticated
 
 
 class UserViewSet(viewsets.ModelViewSet):
@@ -18,3 +19,8 @@ class UserViewSet(viewsets.ModelViewSet):
     search_fields = ["username", "email"]
     ordering_fields = ["id", "username", "date_joined"]
     ordering = ["id"]
+
+    def get_permissions(self):
+        if self.action == "create":
+            return [AllowAny()]
+        return [IsAuthenticated()]
