@@ -79,7 +79,7 @@ testpaths = ["apps", "tests"]
 pythonpath = ["."]
 log_cli = true
 log_level = "INFO"
-DJANGO_SETTINGS_MODULE = "config.settings"
+DJANGO_SETTINGS_MODULE = "config.settings_test"
 addopts = [
     "-ra",
     "-v",
