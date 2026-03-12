@@ -1,0 +1,52 @@
+services:
+  database_test:
+    image: postgres:16
+    container_name: database_test
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  backend:
+    build:
+      context: ./backend
+    container_name: django_backend
+    volumes:
+      - ./backend:/app
+    ports:
+      - "8000:8000"
+    depends_on:
+      - database_test
+    
+    # !!! Aviso: Variáveis de ambiente expostas apenas para desenvolvimento local.
+    # Essas credenciais são utilizadas somente para facilitar testes e desenvolvimento.
+    # NÃO utilize esses valores em ambiente de produção.
+    environment:
+      SECRET_KEY: "django-insecure-1234"
+      DEBUG: "False"
+      DATABASE_URL: "postgres://postgres:postgres@db:5432/postgres"
+      DATABASE_NAME: "postgres"
+      DATABASE_USER: "postgres"
+      DATABASE_PASSWORD: "postgres"
+      DATABASE_HOST: "database_test"
+      DATABASE_PORT: "5432"
+
+  frontend:
+    build:
+      context: ./frontend
+    container_name: react_frontend
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    ports:
+      - "5173:5173"
+    depends_on:
+      - backend
+
+volumes:
+  postgres_data:
