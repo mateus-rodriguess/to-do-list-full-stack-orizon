@@ -8,6 +8,10 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
+    # Aviso: Variáveis de ambiente expostas, use o GitHub Secrets !!!
+    env:
+      SECRET_KEY: django-test-key
+      DEBUG: True
 
     defaults:
       run:
