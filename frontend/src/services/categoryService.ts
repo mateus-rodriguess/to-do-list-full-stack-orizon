@@ -4,6 +4,7 @@ import type { CategorySchema } from "../schemas/category/categorySchema";
 export type Category = {
   id: number;
   name: string;
+  is_active: boolean;
 };
 
 type CategoryResponse = {
@@ -19,8 +20,13 @@ export const createCategory = async (data: CategorySchema) => {
   return response;
 };
 
-export async function getCategories(page = 1): Promise<CategoryResponse> {
-  const response = await api.get(`/categories?page=${page}`);
+export async function getCategories(params?: {
+  page?: number;
+  page_size?: number;
+  name?: string;
+  search?: string;
+}): Promise<CategoryResponse> {
+  const response = await api.get(`/categories`, { params });
 
   return response.data;
 }
@@ -31,7 +37,7 @@ export async function getAllCategories(): Promise<Category[]> {
   let hasNext = true;
 
   while (hasNext) {
-    const data = await getCategories(page);
+    const data = await getCategories({ page });
 
     allCategories = [...allCategories, ...data.result];
 
@@ -44,3 +50,7 @@ export async function getAllCategories(): Promise<Category[]> {
 
   return allCategories;
 }
+
+export const updateCategory = async (id: number, data: CategorySchema) => {
+  return await api.patch(`/categories/${id}`, data);
+};

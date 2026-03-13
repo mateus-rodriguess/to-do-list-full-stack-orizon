@@ -5,6 +5,8 @@ import Register from "../pages/Register";
 import CreateCategory from "../pages/category/CreateCategory";
 import CreateTask from "../pages/Tasks/createTask";
 import EditTaskPage from "../pages/Tasks/EditTask";
+import CategoryList from "../pages/category/CategoryList";
+import CategoryUpdate from "../pages/category/CategoryUpdate";
 
 export function Router() {
   return (
@@ -15,6 +17,8 @@ export function Router() {
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
       <Route path="/categories/new" element={<CreateCategory />} />
+      <Route path="/categories" element={<CategoryList />} />
+      <Route path="/categories/:id" element={<CategoryUpdate />} />
     </Routes>
   );
 }
