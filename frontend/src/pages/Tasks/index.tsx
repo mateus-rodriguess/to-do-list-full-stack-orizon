@@ -76,6 +76,12 @@ export default function Tasks() {
           >
             + Nova categoria
           </Link>
+          <Link
+            to="/categories"
+            className="bg-gray-600 text-white px-4 py-2 rounded hover:bg-gray-700 transition"
+          >
+            Listar categorias
+          </Link>
         </div>
       </div>
       <div className="flex gap-2 mb-4">

@@ -27,7 +27,7 @@ export default function TaskForm({
     reset,
     formState: { errors },
   } = useForm<TaskSchema>({
-    resolver: zodResolver(taskSchema),
+    resolver: zodResolver(taskSchema) as never,
     defaultValues,
   });
 
@@ -43,6 +43,7 @@ export default function TaskForm({
   const onSubmit: SubmitHandler<TaskSchema> = async (data) => {
     const payload = {
       ...data,
+      collaborators: data.collaborators ?? [],
       due_date: data.due_date
         ? new Date(data.due_date).toISOString()
         : undefined,
@@ -100,10 +101,7 @@ export default function TaskForm({
           className="w-full p-2 border rounded"
         />
 
-        <select
-          {...register("category", { valueAsNumber: true })}
-          className="w-full p-2 border rounded"
-        >
+        <select {...register("category")} className="w-full p-2 border rounded">
           <option value="">Selecione uma categoria</option>
           {categories.map((cat) => (
             <option key={cat.id} value={cat.id}>
@@ -111,6 +109,9 @@ export default function TaskForm({
             </option>
           ))}
         </select>
+        {errors.category && (
+          <p className="text-red-500 text-sm">{errors.category.message}</p>
+        )}
 
         <select {...register("priority")} className="w-full p-2 border rounded">
           <option value="LOW">Baixa</option>
@@ -139,6 +140,9 @@ export default function TaskForm({
             ))}
           </div>
         </div>
+        {errors.collaborators && (
+          <p className="text-red-500 text-sm">Colaboradores inválidos</p>
+        )}
 
         <label className="flex gap-2">
           <input type="checkbox" {...register("is_completed")} /> Concluída
