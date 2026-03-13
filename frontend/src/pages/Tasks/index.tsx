@@ -120,7 +120,7 @@ export default function Tasks() {
       </div>
 
       <div className="grid gap-4">
-        {data.result.map((task: Task) => {
+        {data?.result?.map((task: Task) => {
           const priority = priorityConfig[task.priority];
           return (
             <Link

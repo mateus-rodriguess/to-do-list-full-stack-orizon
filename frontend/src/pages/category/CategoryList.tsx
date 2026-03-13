@@ -87,7 +87,7 @@ export default function CategoryList() {
           </Link>
         ))}
 
-        {data && data.result.length === 0 && (
+        {data && !data?.result?.length && (
           <p className="text-gray-500">Nenhuma categoria encontrada</p>
         )}
       </div>

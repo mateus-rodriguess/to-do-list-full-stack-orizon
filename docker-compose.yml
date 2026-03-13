@@ -47,6 +47,13 @@ services:
       - "5173:5173"
     depends_on:
       - backend
+      
+    # !!! Aviso: Variáveis de ambiente expostas apenas para desenvolvimento local.
+    # Essas credenciais são utilizadas somente para facilitar testes e desenvolvimento.
+    # NÃO utilize esses valores em ambiente de produção.
+    environment:
+      VITE_API_BASE_URL: http://127.0.0.1:8000/api
+      VITE_API_BASE_BANCO_CENTRAL_BRASIL: https://olinda.bcb.gov.br
 
 volumes:
   postgres_data:
